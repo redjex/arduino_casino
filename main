@@ -1,0 +1,92 @@
+int page = 1;
+int ball = 0;
+int ball1 = 0;
+long money = 1000;
+long money2 = 1000;
+
+#include <Wire.h>
+#include "ASOLED.h"
+
+long random_int(int a,int b) {
+  if (a > b) {
+    int c = a;
+    a = b;
+    b = c;
+  }
+  return random(a,b);
+}
+void yield (){
+  if (page == 3) {
+    if (digitalRead(8) == 0) {
+      if (ball == ball1) {
+        for (int count = 0; count < 1; count++) {
+          money = money2 + 100;
+        }
+        LD.printString_12x16(" Win ", 29, 2);
+        delay(1000);
+        LD.printString_12x16("                          ", 29, 2);
+      }
+    }
+  } else {
+    if (digitalRead(8) == 0) {
+      if (ball != ball1) {
+        for (int count = 0; count < 1; count++) {
+          money = money2 - 100;
+        }
+        LD.printString_12x16(" Lose", 29, 2);
+        delay(1000);
+        LD.printString_12x16("                          ", 29, 2);
+      }
+    }
+  }
+  ball = random_int(0, 5);
+  ball1 = random_int(0, 5);
+}
+
+
+void setup() {
+  LD.init();
+ LD.clearDisplay();
+
+  pinMode(2, INPUT_PULLUP);
+  pinMode(3, INPUT_PULLUP);
+
+  pinMode(8, INPUT_PULLUP);
+  randomSeed(analogRead(0));
+}
+
+void loop() {
+    if (digitalRead(2) == 0) {
+      page = page + 1;
+    }
+    if (digitalRead(3) == 0) {
+      page = page - 1;
+    }
+    if (page == 4) {
+      page = 1;
+    }
+    if (page == 0) {
+      page = 3;
+    }
+    if (page == 1) {
+      LD.printString_12x16("Casino", 29, 2);
+      LD.printString_6x8("mini game", 35, 4);
+      LD.printString_6x8("1/3", 95, 15);
+      delay(1000);
+    }
+    if (page == 2) {
+      LD.printString_12x16("                          ", 29, 2);
+      LD.printString_12x16("", 29, 2);
+       LD.printNumber((long)money);
+      LD.printString_6x8("                              ", 35, 4);
+      LD.printString_6x8("2/3", 95, 15);
+      delay(1000);
+    }
+    if (page == 3) {
+      LD.printString_12x16("                          ", 29, 2);
+      LD.printString_6x8("                              ", 35, 4);
+      LD.printString_6x8("3/3", 95, 15);
+      delay(1000);
+    }
+
+} 
